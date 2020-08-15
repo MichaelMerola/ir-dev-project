@@ -1,0 +1,22 @@
+mat-card {
+  color: #ffffff;
+  background-color: #121212;
+}
+
+.header {
+  text-align: center;
+}
+
+#title {
+  /* display: inline-block; */
+  padding: 28px;
+  font-size: 2.6em;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.main {
+  margin-left: 10%;
+  margin-right: 10%;
+  /* width: 80%; */
+}

@@ -1,0 +1,302 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class='main'>
+
+  <!-- <p>data-display works!</p> -->
+
+  <div class='grid-layout'>
+
+    <!-- OVERVIEW -->
+    <div class='overview'>
+      <mat-card class='grid-card'>
+
+        <!-- CALL -->
+        <mat-card class='sys infoblock'> 
+          <h1> <mat-icon>phone_in_talk</mat-icon> {{activeCalls}} Active Call(s)</h1>
+          <!-- <span class='info' style='text-align: right;'> / 2 maximum active</span> -->
+
+          <div class='spacer-small'></div>
+
+          <h2 class='call'> {{callType}} Call : 
+            <span *ngIf="isConnect; else statusOther" id='green'>
+              {{callAnswer}}, {{callStatus}} <mat-icon>check_circle</mat-icon>
+            </span>
+            <ng-template #statusOther> <span id='err'> {{callStatus}} </span></ng-template>
+          </h2>
+
+          <div *ngFor="let infoc of CallDetails">
+              <p class='info'>{{infoc}}</p>
+          </div>
+
+          <div class='spacer-small'></div>
+
+          <h2> Capable of {{MaxCalls}} Total Calls Maximum</h2>
+
+          <!-- Active Calls -->
+          <h2 class='notice-type info-mid' id='warn'>
+            <mat-icon>phone_in_talk</mat-icon> {{activeCalls}} / {{maxActive}} 
+
+            <span *ngIf="activeWarn" id='italic'><mat-icon>warning</mat-icon> Max Active Calls Limited </span>
+            <span *ngIf="!activeWarn" id='italic'> <mat-icon>check</mat-icon> Active Calls </span>
+          </h2>
+
+          <!-- Video Calls -->
+          <h2 class='notice-type info-mid' id='err'>
+            <mat-icon>videocam</mat-icon> {{videoCalls}} / {{maxVideo}} 
+
+            <span *ngIf="videoWarn" id='italic'> <mat-icon>error</mat-icon> Max Video Call Limit Reached! </span>
+            <span *ngIf="!videoWarn" id='italic'> <mat-icon>check</mat-icon> Video Calls </span>
+          </h2>
+
+          <!-- Audio Calls -->
+          <h2 class='notice-type info-mid'>
+            <mat-icon>call</mat-icon> {{audioCalls}} / {{maxAudio}} 
+
+            <span *ngIf="audioWarn" id='italic'><mat-icon>warning</mat-icon> Max Audio Call Limit Reached! </span>
+            <span *ngIf="!audioWarn" id='italic'> <mat-icon>check</mat-icon> Audio Calls </span>
+          </h2>
+
+        </mat-card>
+
+        <div class='spacer'></div>
+
+        <!-- SYSTEM -->
+        <mat-card class='sys infoblock'> 
+          <h1> <mat-icon>developer_board</mat-icon> 
+            System Details
+          </h1>
+          <p class='info info-mid'>{{productDetail}}</p>
+          <div class='spacer-small'></div>
+
+          <h2>Hardware</h2>
+          <p class='info'>Serial Number: {{serialNumber}}</p>
+          <div class='spacer-small'></div>
+          <div *ngFor="let stat of FanDetails; let i = index">
+            <p class='info'> 
+              <mat-icon>toys</mat-icon> 
+              <span style='font-weight: bold;'> Fan {{i + 1}} :</span> {{stat}}
+            </p>
+          </div>
+          <div class='spacer-small'></div>
+
+          <h2>Software</h2>
+          <p class='info info-mid'>{{softName}}, {{softVersion}}</p>
+          <div class='spacer-small'></div>
+          <div *ngFor="let yesopt of trueOptions">
+            <p class='info'> 
+              <mat-icon>check_box</mat-icon> 
+              {{yesopt}}
+            </p>
+          </div>
+          <div *ngFor="let nopt of falseOptions">
+            <p class='info'> 
+              <mat-icon>check_box_outline_blank</mat-icon> 
+              {{nopt}}
+            </p>
+          </div>
+
+        </mat-card>
+
+      </mat-card>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class='side'>
+      <mat-card class='grid-card'>
+        
+        <!-- SYSTEM TIME -->
+        <mat-card class='sys infoblock'> 
+
+          <h1 id="systime">{{SystemTime}}</h1> 
+
+          <p class='info'>
+            <button mat-stroked-button (click)="callAPI()">
+              <!-- <mat-icon style='font-size:1.1em; width: 15px; height:15px; margin-top:3px;'>refresh</mat-icon>  -->
+              Request Update
+            </button>
+            updating in... {{timeUntilRequest}} sec
+          </p>
+
+          <div class='spacer'></div>
+
+          <h1><mat-icon>contacts</mat-icon> Contact</h1>
+          <div *ngFor="let contact of ContactInfo">
+            <p class='info'>{{contact}}</p>
+          </div>
+
+        </mat-card>
+
+        <div class='spacer'></div>
+        
+        <!-- DIAGNOSTICS -->
+        <mat-card class='sys infoblock'>
+
+          <h1>
+            <mat-icon>build</mat-icon> Diagnostics
+          </h1>
+          <p class='info'>Last run on {{lastRunDiagn}} &nbsp;
+            <span *ngIf="lastRunWarn" id='err'><mat-icon style='font-size:1.1em; width: 15px; height: 15px;'>error</mat-icon>
+              diagnostics outdated - run again!</span>
+          </p>
+
+          <div class='spacer-small'></div>
+          
+          <!-- Errors -->
+          <div *ngFor="let item of ErrDetails">
+            <h2 class='notice' id='err'>
+              <mat-icon>error</mat-icon> {{item.level}} :
+              <span class='notice-type'>{{item.type}}</span>
+            </h2>
+
+            <p class='info info-mid'>- {{item.description}}</p>
+          </div>
+
+          <div class='spacer-small'></div>
+
+          <!-- Warnings -->
+          <div *ngFor="let item of WarnDetails">
+            <h2 class='notice' id='warn'>
+              <mat-icon>warning </mat-icon> {{item.level}} :
+              <span class='notice-type'> {{item.type}}</span>
+            </h2>
+
+            <p class='info info-mid'>- {{item.description}}</p>
+          </div>
+
+        </mat-card>
+
+        <div class='spacer'></div>
+
+        <!-- PERIPHERALS -->
+        <mat-card class='sys infoblock'>
+          <h1><mat-icon>leak_add</mat-icon> 
+            Peripherals
+          </h1>
+
+          <!-- Devices -->
+          <div *ngFor="let dev of DevicesDetail">
+            <h2><mat-icon>devices</mat-icon> {{dev.name}} :
+              <span class='notice-type' id='green'> {{dev.status}}</span>
+            </h2>
+
+            <p class='info info-mid'> {{dev.type}}</p>
+            <p class='info'> ID {{dev.id}}</p>
+            <p class='info'> Software Info: {{dev.softwareInfo}}</p>
+            <p class='info'> Hardware Info: {{dev.hardwareInfo}}</p>
+            <p class='info'> Upgrade Status: {{dev.upgradeStatus}}</p>
+
+            <div class='spacer-small'></div>
+          </div>
+
+          <!-- Cameras -->
+          <div *ngFor="let cam of CamerasDetail">
+            <h2><mat-icon>photo_camera</mat-icon> {{cam.name}} :
+              <span class='notice-type' id='green'> {{cam.status}}</span>
+            </h2>
+
+            <p class='info info-mid'> Serial No. {{cam.serial}}</p>
+            <p class='info'> Manufacturer {{cam.manufact}}</p>
+            <p class='info'> MAC Address {{cam.id}}</p>
+            <p class='info'> Software ID: {{cam.softID}}</p>
+            <p class='info'> Upgrade Status: {{cam.upgradeStatus}}</p>
+            <p class='info'> Flip: {{cam.isFlip}}</p>
+
+            <div class='spacer-small'></div>
+          </div>
+
+
+        </mat-card>
+
+      </mat-card>
+    </div>
+
+    <!-- BOTTOM -->
+    <div class='other'>
+      <mat-card class='grid-card'>
+        <h1>Network</h1>
+
+        <!-- CISCO DISCOVERY PROTOCOL (CDP) -->
+        <div class='netcard'>
+          <mat-card class='sys netblock'>
+            <h2> <mat-icon>category</mat-icon>
+              Cisco Discovery Protocol (CDP)
+            </h2>
+            
+            <div *ngFor="let info of ciscoInfo">
+              <p class='info'> {{info}} </p>
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- ETHERNET -->
+        <div class='netcard'>
+          <mat-card class='sys netblock'>
+
+            <h2> <mat-icon>settings_ethernet</mat-icon>
+              Ethernet
+            </h2>
+            
+            <div *ngFor="let info of ethernetInfo">
+              <p class='info'> {{info}} </p>
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- IPV4 / IPV6 -->
+        <div class='netcard'>
+          <mat-card class='sys netblock'>
+            <h2> <mat-icon>network_check</mat-icon>
+              IPv4
+            </h2>
+
+            <div *ngFor="let info of ipv4Info">
+              <p class='info'> {{info}} </p>
+            </div>
+
+            <div class='spacer'></div>
+
+            <h2> <mat-icon>network_check</mat-icon>
+              IPv6
+            </h2>
+
+            <div *ngFor="let info of ipv6Info">
+              <p class='info'> {{info}} </p>
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- DNS -->
+        <div class='netcard'>
+          <mat-card class='sys netblock'>
+            <h2> <mat-icon>device_hub</mat-icon>
+              DNS Servers
+            </h2>
+            <p class='info info-mid'>{{dnsName}}</p>
+            <div *ngFor="let serv of dnsServers">
+              <p class='info'> {{serv}} </p>
+            </div>
+          </mat-card>
+        </div>
+
+        <!-- NTP -->
+        <div class='netcard'>
+          <mat-card class='sys netblock'>
+
+            <h2> <mat-icon>looks</mat-icon>
+              NTP
+            </h2>
+            
+            <div *ngFor="let info of ntpInfo">
+              <p class='info'> {{info}} </p>
+            </div>
+          </mat-card>
+        </div>
+
+      </mat-card>
+    </div>
+
+  </div> 
+<!-- grid layout -->
+</div>
+<!-- main -->
+
