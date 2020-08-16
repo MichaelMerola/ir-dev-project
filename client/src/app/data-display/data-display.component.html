@@ -1,8 +1,7 @@
+<!-- include standard material icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <div class='main'>
-
-  <!-- <p>data-display works!</p> -->
 
   <div class='grid-layout'>
 
@@ -13,7 +12,6 @@
         <!-- CALL -->
         <mat-card class='sys infoblock'> 
           <h1> <mat-icon>phone_in_talk</mat-icon> {{activeCalls}} Active Call(s)</h1>
-          <!-- <span class='info' style='text-align: right;'> / 2 maximum active</span> -->
 
           <div class='spacer-small'></div>
 
@@ -110,8 +108,7 @@
           <h1 id="systime">{{SystemTime}}</h1> 
 
           <p class='info'>
-            <button mat-stroked-button (click)="callAPI()">
-              <!-- <mat-icon style='font-size:1.1em; width: 15px; height:15px; margin-top:3px;'>refresh</mat-icon>  -->
+            <button mat-stroked-button (click)="requestButton()">
               Request Update
             </button>
             updating in... {{timeUntilRequest}} sec
@@ -204,13 +201,12 @@
             <div class='spacer-small'></div>
           </div>
 
-
         </mat-card>
 
       </mat-card>
     </div>
 
-    <!-- BOTTOM -->
+    <!-- BOTTOM PANEL -->
     <div class='other'>
       <mat-card class='grid-card'>
         <h1>Network</h1>
@@ -296,7 +292,7 @@
     </div>
 
   </div> 
-<!-- grid layout -->
+<!-- end// grid layout -->
 </div>
-<!-- main -->
+<!-- end// main -->
 

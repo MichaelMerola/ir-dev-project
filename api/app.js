@@ -47,4 +47,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+console.log("api writing to http://localhost:9000/data-api");
 module.exports = app;

@@ -14,12 +14,30 @@ export class DataDisplayComponent implements OnInit {
    * // this file functions as the intermediary between the node/express backend and the Angular client utility
    * 
    * startTimer():  on component init, set timer to request data from API at specified interval (60 sec)
+   * requestButton(): resets the timer and requests data on button press
    * callAPI():     data from the xml file is recieved via express/API and stored in local objects to be parsed
+   * 
    * convertTime(): change SystemTime from YYYY-MM-DDT00:00:00Z to standard format for easy viewing
+   * getContacts(): parses for contact info in the UserInterface->ContactInfo objects
+   * 
+   * getCalls():    !!
+   * 
+   * getDiagnostics(): parses for critical info messages in the SystemUnit object; red=error, yellow=warning
+   *                ** also compares the "last run date" detail to current date, display error if > year outdated
+   * 
+   * analyzeSystem():  parses SystemUnit object for extra details including hardware fans and software options.
+   *                ** if any hardware fans are below avg rpm, display a notice
+   * 
+   * getPeripherals(): parses Peripherals->ConnectedDevice objects to list all devices with detail and status.
+   *                ** if device is a camera, use Cameras obj to get extra details like model, serial no, etc..
+   * 
+   * getNetworkInfo(): parses Network & NetworkServices objects for info on CDP, Ethernet, IPv4/6, DNS, and NTP
+   *                ** uses objectToRows() helper to aid with data parsing that is simlar between objs
    * 
   */
 
   // variables for tracking time
+  requestSec: number = 60;
   timeUntilRequest: number; //1min intervals
   interval;
 
@@ -48,8 +66,13 @@ export class DataDisplayComponent implements OnInit {
     }, 1000);
   }//end startTimer()
 
+  requestButton() {
+    this.timeUntilRequest = this.requestSec;
+    this.callAPI();
+  }
+
   callAPI(): void {
-    console.log("requesting data...");
+    console.log("requesting data from localhost:9000...");
 
     fetch('http://localhost:9000/data-api')
       .then(res => res.text())
@@ -57,8 +80,6 @@ export class DataDisplayComponent implements OnInit {
         
         //parse data into a usable JSON object
         let asset = JSON.parse(res);
-
-        console.log(asset.Status.$.product); //"Cisco Codec"
 
         //get System Time and Contact Info
         this.SystemTime = this.convertTime( asset.Status.Time[0].SystemTime[0] );
@@ -70,9 +91,10 @@ export class DataDisplayComponent implements OnInit {
         this.analyzeSystem(SystemUnit);
         this.getCalls(SystemUnit, asset.Status.Call, asset.Status.Capabilities[0].Conference[0]);
 
-        // get connect peripheral devices and camera info
+        // get connected peripheral devices and camera info
         this.getPeripherals(asset.Status.Peripherals[0].ConnectedDevice, asset.Status.Cameras[0].Camera);
 
+        // get info on the various networks
         this.getNetworkInfo(asset.Status.Network[0], asset.Status.NetworkServices[0]);
 
       
@@ -130,6 +152,7 @@ export class DataDisplayComponent implements OnInit {
     // For every active call in list...
     callList.forEach(call => {
 
+      // store and display the type/status of active call
       this.callStatus = call.Status[0];
       this.callType = call.CallType[0];
       this.callAnswer = call.AnswerState[0];
@@ -143,7 +166,9 @@ export class DataDisplayComponent implements OnInit {
       if (this.callStatus == 'Connected') {
         this.isConnect = true;
         let tempCall: string[] = [];
-  
+        
+        // for every item in the call details, record a string that includes key + value
+        //**excludes keys already parsed or object vals
         Object.keys(call).forEach(function(key) {
           let val = (call[key]).toString();
           //exclude unnecessary data
@@ -374,7 +399,7 @@ export class DataDisplayComponent implements OnInit {
   }//end getNetworkInfo()
 
   // helper function to parse objects into an array of key/val row strings
-  // ie. "key: val"
+  // ie. row = "key: val"
   private objectToRows(obj: object): string[] {
     let tempCall: string[] = [];
 
@@ -399,11 +424,13 @@ export class DataDisplayComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // initial API call
+    // initial API request, 
+    // utilizes class functions to parse data into global variables to display via html.
     this.callAPI();
     // start timer to request data every 60 seconds.
-    this.startTimer(60);
+    this.startTimer(this.requestSec);
 
+    console.log("frontend listening at http://localhost:4200/");
   }
 
 }

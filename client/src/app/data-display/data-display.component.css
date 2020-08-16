@@ -1,3 +1,4 @@
+/* OVERALL STYLES */
 mat-card {
   color: #ffffff;
   background-color: #121212;
@@ -44,10 +45,12 @@ button {
 .spacer {padding: 8px;}
 .spacer-small {padding: 5px;}
 
+/* main card backcolor */
 .sys {
   background-color: rgba(255, 255, 255, 0.08);
 }
-.infoblock {
+/* info tags, mainly used for displaying detail content */
+.infoblock {              
   text-align: left;
   padding-left: 50px;
 }
@@ -63,10 +66,10 @@ button {
 }
 .info-mid {font-size: 1.1em;}
 
+/* net tags, mainly used for displaying network content (at bottom) */
 .netcard {
   display: inline-flex;
   width: auto;
-  /* max-width: 40%; */
   margin: 10px;
 }
 .netblock {
@@ -83,12 +86,13 @@ button {
   width:80%;
 }
 
+/* tag for SystemTime font */
 #systime {
   font-family: 'Recursive', sans-serif;
   font-size: 2.1em;
-  /* font-weight: 600; */
 }
 
+/* misc colors + attributes */
 #green {color: #46da53}
 #err {color: #da4646}
 #warn {color: #dac446}
