@@ -1,5 +1,7 @@
 # Graduate Development Challenge for IR Prognosis Team
 
+![app screenshot](https://github.com/MichaelMerola/ir-dev-project/blob/master/finalapp.png)
+
 ## Installations
 ### Node
 https://nodejs.org/en/download/
