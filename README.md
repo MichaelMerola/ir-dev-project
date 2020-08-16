@@ -1,4 +1,4 @@
-# Graduate Development Challenge for IR Prognosis Team
+# Graduate Dev Challenge for IR Prognosis Team
 
 ![app screenshot](https://github.com/MichaelMerola/ir-dev-project/blob/master/finalapp.png)
 
