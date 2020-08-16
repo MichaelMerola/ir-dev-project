@@ -9,16 +9,19 @@ https://nodejs.org/en/download/
 
 ## Run App
 
-**Start Express Server:**
+**Start Node Server:**
 
-cd repo / server / api
+$ cd repo / api
+### `npm install`
 ### `npm start`
+*the api will start writing data from .xml to http://localhost:9000/data-api
   
 **Start Angular App:**
 
 open another terminal tab.
 
-cd repo / client
+$ cd repo / client
+### `npm install`
 ### `ng serve`
   
 Open [http://localhost:4200](http://localhost:4200) to view it in the browser.
