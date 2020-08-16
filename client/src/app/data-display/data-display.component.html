@@ -15,18 +15,41 @@
 
           <div class='spacer-small'></div>
 
-          <h2 class='call'> {{callType}} Call : 
-            <span *ngIf="isConnect; else statusOther" id='green'>
-              {{callAnswer}}, {{callStatus}} <mat-icon>check_circle</mat-icon>
+          <!-- for every call object... -->
+          <div *ngFor="let call of CallDetails">
+
+            <h2 class='call'> {{call.type}} Call : 
+              <span *ngIf="call.isConnect; else statusOther" id='green'>
+                {{call.answer}}, {{call.status}} <mat-icon>check_circle</mat-icon>
+              </span>
+              <ng-template #statusOther> <span id='err'> 
+                {{call.status}} <mat-icon>error</mat-icon>
+              </span></ng-template>
+            </h2>
+  
+            <p class='info info-mid'> <mat-icon>person</mat-icon>
+              {{call.displayName}}
+            </p>
+            
+            <p class='info'><mat-icon>phone_callback</mat-icon>
+              Callback {{call.callbackNum}}</p>
+
+            <span *ngIf="call.onHold">
+              <p class='info' id='warn'>On Hold: {{call.holdReason}}</p>
             </span>
-            <ng-template #statusOther> <span id='err'> {{callStatus}} </span></ng-template>
-          </h2>
 
-          <div *ngFor="let infoc of CallDetails">
-              <p class='info'>{{infoc}}</p>
+            <p class='info'>{{call.duration}}s, {{call.direction}}</p>
+
+            <div>
+              <p class='info'>Recieve Rate: {{call.recieve}}, Transmit Rate: {{call.transmit}}</p>
+              <p class='info'>Facility Service ID: {{call.facilityID}}</p>
+              <p class='info'>Device: {{call.deviceType}}</p>
+              <p class='info'>Encryption: {{call.encryption}}</p>
+              <p class='info'>Protocol: {{call.protocol}}</p>
+            </div>
+
+            <div class='spacer-small'></div>
           </div>
-
-          <div class='spacer-small'></div>
 
           <h2> Capable of {{MaxCalls}} Total Calls Maximum</h2>
 
@@ -173,7 +196,12 @@
           <!-- Devices -->
           <div *ngFor="let dev of DevicesDetail">
             <h2><mat-icon>devices</mat-icon> {{dev.name}} :
-              <span class='notice-type' id='green'> {{dev.status}}</span>
+              <span *ngIf="dev.isConnect; else statusOther" class='notice-type' id='green'> 
+                {{dev.status}}
+              </span>
+              <ng-template #statusOther> <span id='err'> 
+                {{dev.status}} <mat-icon>error</mat-icon>
+              </span></ng-template>
             </h2>
 
             <p class='info info-mid'> {{dev.type}}</p>
@@ -188,7 +216,12 @@
           <!-- Cameras -->
           <div *ngFor="let cam of CamerasDetail">
             <h2><mat-icon>photo_camera</mat-icon> {{cam.name}} :
-              <span class='notice-type' id='green'> {{cam.status}}</span>
+              <span *ngIf="cam.isConnect; else statusOther" class='notice-type' id='green'> 
+                {{cam.status}}
+              </span>
+              <ng-template #statusOther> <span id='err'> 
+                {{cam.status}} <mat-icon>error</mat-icon>
+              </span></ng-template>
             </h2>
 
             <p class='info info-mid'> Serial No. {{cam.serial}}</p>

@@ -161,7 +161,27 @@
     <Status>Connected</Status>
     <TransmitCallRate>4096</TransmitCallRate>
   </Call>
-  <Call item="62" maxOccurrence="n">
+  <Call item="63" maxOccurrence="n">
+    <AnswerState>Answered</AnswerState>
+    <CallType>Audio</CallType>
+    <CallbackNumber>sip:2100000@DC1-A-VCCOND1-164.dvuadmin.net</CallbackNumber>
+    <DeviceType>MCU</DeviceType>
+    <Direction>Outgoing</Direction>
+    <DisplayName>2100000@DC1-A-VCCOND1-164.dvuadmin.net</DisplayName>
+    <Duration>381</Duration>
+    <Encryption>
+      <Type>AES-128</Type>
+    </Encryption>
+    <FacilityServiceId>0</FacilityServiceId>
+    <HoldReason>Customer on second line</HoldReason>
+    <PlacedOnHold>True</PlacedOnHold>
+    <Protocol>SIP</Protocol>
+    <ReceiveCallRate>4096</ReceiveCallRate>
+    <RemoteNumber>2100000@DC1-A-VCCOND1-164.dvuadmin.net</RemoteNumber>
+    <Status>Connected</Status>
+    <TransmitCallRate>4096</TransmitCallRate>
+  </Call>
+  <Call item="64" maxOccurrence="n">
     <AnswerState>Answered</AnswerState>
     <CallType>Audio</CallType>
     <CallbackNumber>sip:2100000@DC1-A-VCCOND1-164.dvuadmin.net</CallbackNumber>
@@ -178,7 +198,7 @@
     <Protocol>SIP</Protocol>
     <ReceiveCallRate>4096</ReceiveCallRate>
     <RemoteNumber>2100000@DC1-A-VCCOND1-164.dvuadmin.net</RemoteNumber>
-    <Status>Connected</Status>
+    <Status>Disconnected</Status>
     <TransmitCallRate>4096</TransmitCallRate>
   </Call>
   <CallDiagnostics item="2" maxOccurrence="n"/>
@@ -553,7 +573,7 @@
       <ID>88:43:e1:c6:ae:12</ID>
       <Name>Cisco TelePresence Touch</Name>
       <SoftwareInfo>TI8.0.1 1e47efe 2016-01-18</SoftwareInfo>
-      <Status>Connected</Status>
+      <Status>Disconnected</Status>
       <Type>TouchPanel</Type>
       <UpgradeStatus>None</UpgradeStatus>
     </ConnectedDevice>
@@ -693,10 +713,10 @@
     <Diagnostics item="1">
       <LastRun item="1">2016-07-29T00:40:01Z</LastRun>
       <Message item="1">
-        <Description item="1">Microphone is not connected any more, check the connection.</Description>
+        <Description item="1">Camera is not connected any more, check the connection.</Description>
         <Level item="1">Error</Level>
         <References item="1"></References>
-        <Type item="1">MicrophoneDisconnected</Type>
+        <Type item="1">CameraDisconnected</Type>
       </Message>
     </Diagnostics>
     <State>

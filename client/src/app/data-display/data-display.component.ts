@@ -20,7 +20,9 @@ export class DataDisplayComponent implements OnInit {
    * convertTime(): change SystemTime from YYYY-MM-DDT00:00:00Z to standard format for easy viewing
    * getContacts(): parses for contact info in the UserInterface->ContactInfo objects
    * 
-   * getCalls():    !!
+   * getCalls():    determines number of active calls on system, then parses Call obj for data on each call
+   *                ** analyzes capabilities of system and displays info on current max limit
+   *                ** will display notice if call is currently on hold
    * 
    * getDiagnostics(): parses for critical info messages in the SystemUnit object; red=error, yellow=warning
    *                ** also compares the "last run date" detail to current date, display error if > year outdated
@@ -97,8 +99,6 @@ export class DataDisplayComponent implements OnInit {
         // get info on the various networks
         this.getNetworkInfo(asset.Status.Network[0], asset.Status.NetworkServices[0]);
 
-      
-        // console.log(this.ContactInfo);
       });
   }//end callAPI()
 
@@ -134,7 +134,7 @@ export class DataDisplayComponent implements OnInit {
   isConnect: boolean = false;
   callType: string;
   callAnswer: string;
-  CallDetails: string[];
+  CallDetails: object[];
 
   // DETERMINE CALL STATUS //
   getCalls(sysdata: any, callList: any, capableList: any) {
@@ -150,43 +150,43 @@ export class DataDisplayComponent implements OnInit {
     this.maxAudio = capableList.MaxAudioCalls;
 
     // For every active call in list...
+    let tempList: object[] = [];
+
     callList.forEach(call => {
 
-      // store and display the type/status of active call
-      this.callStatus = call.Status[0];
-      this.callType = call.CallType[0];
-      this.callAnswer = call.AnswerState[0];
+      // store the info of active call
+      let callDetail: any = new Object({
+        status: call.Status[0],
+        type: call.CallType[0],
+        answer: call.AnswerState[0],
+        isConnect: false,
+        onHold: (call.PlacedOnHold[0].toLowerCase() == "true"),
+        holdReason: call.HoldReason[0],
+        displayName: call.DisplayName[0],
+        callbackNum: call.CallbackNumber[0],
+        facilityID: call.FacilityServiceId[0],
+        deviceType: call.DeviceType[0],
+        direction: call.Direction[0],
+        duration: call.Duration[0],
+        encryption: call.Encryption[0].Type[0],
+        protocol: call.Protocol[0],
+        recieve: call.ReceiveCallRate[0],
+        transmit: call.TransmitCallRate[0]
+      })
 
       //count call types
       if (call.CallType[0] === 'Video') {
         this.videoCalls += 1;
       } else {this.audioCalls++}
 
-      //display call details if connected (live)
-      if (this.callStatus == 'Connected') {
-        this.isConnect = true;
-        let tempCall: string[] = [];
-        
-        // for every item in the call details, record a string that includes key + value
-        //**excludes keys already parsed or object vals
-        Object.keys(call).forEach(function(key) {
-          let val = (call[key]).toString();
-          //exclude unnecessary data
-          if (! val.includes('object') && ! key.includes('CallType') && 
-              ! key.includes('AnswerState') &&
-              ! key.includes('Status')
-              ) {
-            //add row to display list
-            let row = key + ': ' + val;
-            tempCall.push(row);
-          }
-  
-        })
-        //set list to class variable
-        this.CallDetails = tempCall;
-  
-      }//end if
+      //check if call is connected (live)
+      if (callDetail.status == 'Connected') {
+        callDetail.isConnect = true;
+      }
+      tempList.push(callDetail);
+
     })//end forEach call
+    this.CallDetails = tempList;
 
     // check if calls are near max limit
     if (this.activeCalls >= (this.maxActive/2)) {this.activeWarn = true}
@@ -259,7 +259,6 @@ export class DataDisplayComponent implements OnInit {
     (sysdata.Hardware[0].Monitoring[0].Fan).forEach(function(fan) {
       let status: string = (fan.Status[0]);
       if (2550 > Number(status.substring(0,4)) ) {
-        console.log('low');
         status = String( status + ' !! low');
       }
       tempFans.push(status);
@@ -306,12 +305,13 @@ export class DataDisplayComponent implements OnInit {
           //ids match!
           if (item.ID[0] === cam.MacAddress[0]) {
 
-            let camera = new Object({
+            let camera: any = new Object({
               hardwareInfo: item.HardwareInfo[0],
               id: item.ID[0],
               name: item.Name[0],
               softwareInfo: item.SoftwareInfo[0],
               status: item.Status[0],
+              isConnect: false,
               type: item.Type[0],
               upgradeStatus: item.UpgradeStatus[0],
               isConnected: cam.Connected[0],
@@ -321,6 +321,10 @@ export class DataDisplayComponent implements OnInit {
               serial: cam.SerialNumber[0],
               softID: cam.SoftwareID[0]
             })
+            //check if device is connected
+            if (camera.status == 'Connected') {
+              camera.isConnect = true;
+            }
             tempCam.push(camera);
 
           } else { console.log('no matching device id !!')}
@@ -328,15 +332,20 @@ export class DataDisplayComponent implements OnInit {
 
       // otherwise gather standard data on peripheral device
       } else {
-        let device = new Object({
+        let device: any = new Object({
           hardwareInfo: item.HardwareInfo[0],
           id: item.ID[0],
           name: item.Name[0],
           softwareInfo: item.SoftwareInfo[0],
           status: item.Status[0],
+          isConnect: false,
           type: item.Type[0],
           upgradeStatus: item.UpgradeStatus[0]
         })
+        //check if device is connected
+        if (device.status == 'Connected') {
+          device.isConnect = true;
+        }
         tempDev.push(device);
       }//end if camera
 
@@ -389,8 +398,6 @@ export class DataDisplayComponent implements OnInit {
       }
     })
     this.dnsServers = tempServ;
-
-    console.log(this.dnsServers);
 
     // NTP //
     this.ntpInfo = this.objectToRows(netservice.NTP[0]);
